@@ -3,7 +3,7 @@ from . import definitions
 from .utils import find_namespace, find_namespace_id
 
 
-class KetoRelationTuples(models.Model):
+class RelationTuples(models.Model):
     namespace_id = models.IntegerField()
     object = models.CharField(max_length=64)
     relation = models.CharField(max_length=64)
