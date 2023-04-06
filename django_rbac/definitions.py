@@ -1,21 +1,17 @@
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json
 import typing as t
-import uuid
 from enum import Enum
 
 
-@dataclass_json
 @dataclass
 class Subject:
     def unique_id(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def __eq__(self, other):
-        raise NotImplemented
+        raise NotImplementedError
 
 
-@dataclass_json
 @dataclass
 class SubjectID(Subject):
     id: str
@@ -29,7 +25,6 @@ class SubjectID(Subject):
         return self.id == other.id
 
 
-@dataclass_json
 @dataclass
 class SubjectSet:
     namespace: str
@@ -45,7 +40,6 @@ class SubjectSet:
         return self.namespace == other.namespace and self.object == other.object and self.relation == other.relation
 
 
-@dataclass_json
 @dataclass
 class RelationQuery:
     namespace: str
@@ -54,7 +48,6 @@ class RelationQuery:
     subject: Subject
 
 
-@dataclass_json
 @dataclass
 class RelationTuple:
     namespace: str
@@ -71,7 +64,6 @@ class ExpandNodeType(str, Enum):
     ExpandNodeUnspecified = 'unspecified'
 
 
-@dataclass_json
 @dataclass
 class Tree:
     type: str

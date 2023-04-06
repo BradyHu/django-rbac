@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DjangoRbacRdbConfig(AppConfig):
+class PermissionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'django_rbac.rdb'
+    name = 'permission'

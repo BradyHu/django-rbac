@@ -1,6 +1,5 @@
-import os
-
 import yaml
+from django.conf import settings
 
 
 def parse_keto_file(filepath):
@@ -10,7 +9,7 @@ def parse_keto_file(filepath):
 
 
 keto_definition = parse_keto_file(
-    os.path.abspath(os.path.join(__file__, '../../config/keto.yml'))
+    settings.KETO_YAML_PATH
 )
 
 

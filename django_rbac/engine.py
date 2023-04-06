@@ -1,7 +1,7 @@
 from django.conf import settings
-from django_rbac.rdb.models import KetoRelationTuples
-from django_rbac.rdb import definitions
-from django_rbac.rdb import utils
+from django_rbac.models import KetoRelationTuples
+from django_rbac import definitions
+from django_rbac import utils
 import typing as t
 
 

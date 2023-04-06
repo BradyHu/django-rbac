@@ -1,12 +1,10 @@
-from django_rbac.rdb.utils import find_namespace_id
-from django_rbac.rdb.models import KetoRelationTuples
-import typing as t
+from django_rbac.utils import find_namespace_id
+from django_rbac.models import KetoRelationTuples
 
 
 def delete_relation_tuples(namespace: str = None, object: str = None, relation: str = None, subject_id: str = None,
                            subject_set_namespace: str = None, subject_set_object: str = None,
-                           subject_set_relation: str = None):
-    kwargs = {}
+                           subject_set_relation: str = None, **kwargs):
     if namespace:
         kwargs['namespace_id'] = find_namespace_id(namespace)
     if object:
@@ -33,7 +31,10 @@ def patch_relation_tuples(action: str, namespace: str, object: str, relation: st
                           subject_set_namespace: str = None, subject_set_object: str = None,
                           subject_set_relation: str = None):
     if subject_id is None:
-        assert subject_set_namespace is not None and subject_set_object is not None and subject_set_relation is not None, "subject_set_namespace, subject_set_object, and subject_set_relation are required when subject_id is not specified"
+        assert subject_set_namespace is not None and \
+               subject_set_object is not None and \
+               subject_set_relation is not None, "subject_set_namespace, subject_set_object, and " \
+                                                 "subject_set_relation are required when subject_id is not specified"
     if action == 'insert':
         KetoRelationTuples.objects.get_or_create(
             namespace_id=find_namespace_id(namespace),
@@ -62,15 +63,20 @@ def create_relation_tuple(namespace: str, object: str, relation: str, subject_id
                           subject_set_namespace: str = None, subject_set_object: str = None,
                           subject_set_relation: str = None):
     if subject_id is None:
-        assert subject_set_namespace is not None and subject_set_object is not None and subject_set_relation is not None, "subject_set_namespace, subject_set_object, and subject_set_relation are required when subject_id is not specified"
-
-    instance, _ = KetoRelationTuples.objects.get_or_create(
-        namespace_id=find_namespace_id(namespace),
-        object=object,
-        relation=relation,
-        subject_id=subject_id,
-        subject_set_namespace_id=find_namespace_id(subject_set_namespace),
-        subject_set_object=subject_set_object,
-        subject_set_relation=subject_set_relation
-    )
+        assert subject_set_namespace is not None and \
+               subject_set_object is not None and \
+               subject_set_relation is not None, "subject_set_namespace, subject_set_object, and " \
+                                                 "subject_set_relation are required when subject_id is not specified"
+    try:
+        instance, _ = KetoRelationTuples.objects.get_or_create(
+            namespace_id=find_namespace_id(namespace),
+            object=object,
+            relation=relation,
+            subject_id=subject_id,
+            subject_set_namespace_id=find_namespace_id(subject_set_namespace),
+            subject_set_object=subject_set_object,
+            subject_set_relation=subject_set_relation
+        )
+    except Exception as e:
+        raise e
     return instance

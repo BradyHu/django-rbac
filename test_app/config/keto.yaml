@@ -1,0 +1,5 @@
+namespaces:
+  - id: 0
+    name: groups
+  - id: 1
+    name: reports
