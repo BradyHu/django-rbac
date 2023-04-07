@@ -42,21 +42,22 @@ def query_permission_tree(namespace: str, domain: str, subject_id: str, max_dept
     tree = engine.build_tree(namespace, domain, subject, max_depth)
     return tree
 
+# # 这部分是定制为自己的项目写的，其实应该移到项目中去，因此注释，作为示例展示
+# def query_permission(namespace: str, domain: str, subject_id: str, max_depth=-1) -> t.List[str]:
+#     tree = query_permission_tree(namespace, domain, subject_id, max_depth)
+#     if tree is None:
+#         return []
+#     ret = []
+#     queue = tree.children
+#     while queue:
+#         node = queue.pop(0)
+#         if node.relation == 'menu_owner':
+#             ret.append(re.compile(r'^/\d+/groups/(.*?)/menus/(.*?)$').findall(node.object)[0])
+#         queue.extend(node.children)
+#     return ret
 
-def query_permission(namespace: str, domain: str, subject_id: str, max_depth=-1) -> t.List[str]:
-    tree = query_permission_tree(namespace, domain, subject_id, max_depth)
-    if tree is None:
-        return []
-    ret = []
-    queue = tree.children
-    while queue:
-        node = queue.pop(0)
-        if node.relation == 'menu_owner':
-            ret.append(re.compile(r'^/\d+/groups/(.*?)/menus/(.*?)$').findall(node.object)[0])
-        queue.extend(node.children)
-    return ret
 
-
+# 根据指定条件，快速筛选满足条件的relation_tuples
 def get_relation_tuples(namespace: str = None, object: str = None, relation: str = None, subject_id: str = None,
                         subject_set_namespace: str = None,
                         subject_set_object: str = None, subject_set_relation: str = None) -> t.List[RelationTuple]:

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django_rbac.api import write, read
 import re
-from django_rbac.definitions import SubjectID, SubjectSet, RelationTuple
+from django_rbac.definitions import SubjectID, SubjectSet, RelationTuple, Tree
 
 
 class TestAPI(TestCase):
@@ -19,7 +19,7 @@ class TestRBAC(TestCase):
         res = read.check(subject_id='dilan', relation='edit', namespace='reports', object='finance')
         self.assertEqual(res, False)
 
-    def test_expand(self):
+    def test_get_relation_tuples(self):
         res = read.get_relation_tuples(subject_id='dilan', relation='member')
         self.assertEqual(res, [
             RelationTuple(namespace='groups', object='community', relation='member', subject=SubjectID(id='dilan')),
@@ -33,6 +33,33 @@ class TestRBAC(TestCase):
         self.assertEqual(res, [
             RelationTuple(namespace='reports', object='community', relation='view', subject=SubjectSet(namespace='groups', object='community', relation='member'))
         ])
+
+    def test_expand(self):
+        res = read.expand(relation='view', namespace='reports', object='finance')
+        self.assertEqual(
+            res,
+            Tree(type='union', subject=SubjectSet(namespace='reports', object='finance', relation='view'), namespace=None, object=None, relation=None, subject_id=None, children=[
+                Tree(type='union', subject=SubjectSet(namespace='groups', object='finance', relation='member'), namespace=None, object=None, relation=None, subject_id=None, children=[
+                    Tree(type='leaf', subject=SubjectID(id='lila'), namespace=None, object=None, relation=None, subject_id=None, children=[])
+                ]),
+                Tree(type='union', subject=SubjectSet(namespace='groups', object='admin', relation='member'), namespace=None, object=None, relation=None, subject_id=None, children=[
+                    Tree(type='leaf', subject=SubjectID(id='neel'), namespace=None, object=None, relation=None, subject_id=None, children=[])
+                ])
+            ])
+        )
+
+    def test_permission(self):
+        res = read.query_permission_tree('groups', "", 'dilan')
+        self.assertEqual(res, Tree(
+            type='union', subject=None, namespace=None, object=None, relation=None, subject_id='dilan', children=[
+                Tree(type='union', subject=None, namespace='groups', object='community', relation='member', subject_id=None, children=[
+                    Tree(type='leaf', subject=None, namespace='reports', object='community', relation='view', subject_id=None, children=[])
+                ]),
+                Tree(type='union', subject=None, namespace='groups', object='marketing', relation='member', subject_id=None, children=[
+                    Tree(type='leaf', subject=None, namespace='reports', object='marketing', relation='view', subject_id=None, children=[])
+                ])
+            ]
+        ))
 
     def setUp(self) -> None:
         for relation_tuple in """
